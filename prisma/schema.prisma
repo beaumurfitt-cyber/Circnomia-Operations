@@ -1,0 +1,122 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum Stage {
+  Target
+  Research
+  Contacted
+  Discovery
+  Proposal
+  LOI
+  ClosedWon
+  ClosedLost
+}
+
+enum BuyingRole {
+  EconomicBuyer
+  TechnicalBuyer
+  UserBuyer
+  Procurement
+  LegalRisk
+  Unknown
+}
+
+enum EntityType {
+  Account
+  Contact
+}
+
+enum OutreachChannel {
+  Email
+  LinkedIn
+  Call
+}
+
+enum OutreachTone {
+  Direct
+  Consultative
+  Short
+}
+
+model Account {
+  id            String    @id @default(uuid())
+  name          String
+  website       String?
+  industry      String
+  region        String
+  stage         Stage     @default(Target)
+  priorityScore Int       @default(0)
+  nextAction    String    @default("Enrich account with 2–3 URLs")
+  notes         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  contacts      Contact[]
+}
+
+model Contact {
+  id         String          @id @default(uuid())
+  accountId  String
+  name       String
+  title      String
+  email      String?
+  phone      String?
+  linkedinUrl String?
+  buyingRole BuyingRole      @default(Unknown)
+  notes      String?
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
+  account    Account         @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  discProfile DiscProfile?
+  outreachDrafts OutreachDraft[]
+
+  @@index([accountId])
+}
+
+model Source {
+  id         String     @id @default(uuid())
+  entityType EntityType
+  entityId   String
+  url        String
+  title      String?
+  snippet    String
+  retrievedAt DateTime  @default(now())
+}
+
+model Enrichment {
+  id         String     @id @default(uuid())
+  entityType EntityType
+  entityId   String
+  field      String
+  valueJson  String
+  confidence Int
+  sourceIds  String
+  createdAt  DateTime   @default(now())
+
+  @@index([entityType, entityId])
+}
+
+model DiscProfile {
+  id             String   @id @default(uuid())
+  contactId       String   @unique
+  hypothesisJson  String
+  updatedAt       DateTime @updatedAt
+  contact         Contact  @relation(fields: [contactId], references: [id], onDelete: Cascade)
+}
+
+model OutreachDraft {
+  id         String          @id @default(uuid())
+  contactId  String
+  channel    OutreachChannel
+  tone       OutreachTone
+  draftText  String
+  createdAt  DateTime        @default(now())
+  contact    Contact         @relation(fields: [contactId], references: [id], onDelete: Cascade)
+
+  @@index([contactId])
+}
