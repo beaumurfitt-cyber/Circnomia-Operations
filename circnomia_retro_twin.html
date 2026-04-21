@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Circnomia Retro Twin</title>
+  <style>
+    :root {
+      --bg: #f4f7f8;
+      --card: #ffffff;
+      --ink: #0f1720;
+      --muted: #5e6b75;
+      --teal: #0f8b8d;
+      --blue: #1868b7;
+      --amber: #d18a00;
+      --red: #cc3d3d;
+      --line: #d8e1e6;
+      --shadow: 0 4px 18px rgba(9, 28, 45, 0.08);
+      --radius: 14px;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      color: var(--ink);
+      background: linear-gradient(180deg, #eef4f7 0%, #f7f9fa 100%);
+    }
+    .wrap { max-width: 1500px; margin: 0 auto; padding: 18px; }
+
+    .masthead {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .title h1 { margin: 0; font-size: 28px; letter-spacing: 0.2px; }
+    .title p { margin: 2px 0 0; color: var(--muted); font-weight: 500; }
+    .badge {
+      background: #e4f4f4;
+      color: #0d6161;
+      border: 1px solid #c8e8e8;
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 14px;
+    }
+
+    .panel, .content {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .panel { padding: 14px; max-height: calc(100vh - 110px); overflow: auto; }
+    .content { padding: 14px; }
+
+    .controls-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .controls-head h2 { font-size: 16px; margin: 0; }
+
+    .btn {
+      border: 1px solid #c7d4db;
+      background: #fff;
+      border-radius: 10px;
+      padding: 8px 10px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 12px;
+    }
+    .btn.primary { background: var(--blue); color: #fff; border-color: #175ca2; }
+
+    .controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+    }
+    .field { display: flex; flex-direction: column; gap: 4px; }
+    .field.full { grid-column: 1 / -1; }
+    label { font-size: 11px; color: #43525e; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; }
+    input, select {
+      width: 100%;
+      border: 1px solid #cbd8df;
+      border-radius: 9px;
+      font-size: 13px;
+      padding: 7px 9px;
+      background: #fff;
+    }
+    input[type="checkbox"] { width: auto; transform: scale(1.1); }
+    .inline { display: flex; align-items: center; gap: 8px; }
+
+    details { border: 1px solid #d8e2e9; border-radius: 10px; padding: 8px; margin-top: 9px; }
+    details summary { cursor: pointer; font-weight: 700; color: #334350; }
+
+    .tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+    .tab {
+      border: 1px solid #c8d5dc;
+      background: #f7fafc;
+      padding: 7px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #264052;
+      cursor: pointer;
+    }
+    .tab.active { background: #e5f0fb; border-color: #a8c6e8; color: #114a83; }
+
+    .tab-pane { display: none; }
+    .tab-pane.active { display: block; }
+
+    .kpis {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .kpi {
+      border: 1px solid #d6e0e6;
+      background: #fff;
+      border-radius: 12px;
+      padding: 10px;
+    }
+    .kpi .k { font-size: 11px; color: var(--muted); font-weight: 700; }
+    .kpi .v { font-size: 21px; font-weight: 800; margin-top: 2px; }
+    .kpi .s { font-size: 11px; color: #536775; }
+
+    .row2 { display: grid; grid-template-columns: 1.3fr 1fr; gap: 12px; }
+    .card {
+      border: 1px solid #d7e1e7;
+      border-radius: 12px;
+      background: #fff;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+    .card h3 { margin: 0 0 8px; font-size: 14px; }
+    .insights ul { margin: 0; padding-left: 17px; display: grid; gap: 6px; }
+    .insights li { font-size: 13px; color: #2d3f4b; }
+
+    canvas { width: 100%; height: 280px; border-radius: 9px; background: #fcfdfe; border: 1px solid #ecf1f5; }
+    .short canvas { height: 220px; }
+
+    .metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+    .metric {
+      border: 1px solid #d4e0e7;
+      border-radius: 10px;
+      padding: 8px;
+      font-size: 12px;
+      color: #39505f;
+      background: #fbfdfd;
+    }
+
+    @media (max-width: 1200px) {
+      .grid { grid-template-columns: 1fr; }
+      .panel { max-height: none; }
+    }
+    @media (max-width: 900px) {
+      .kpis, .metrics { grid-template-columns: repeat(2, 1fr); }
+      .row2 { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="masthead">
+    <div class="title">
+      <h1>Circnomia Retro Twin</h1>
+      <p>12-Month Simulated Commercial &amp; Diurnal Replay</p>
+    </div>
+    <div class="badge">Assumption-driven retrospective model</div>
+  </div>
+
+  <div class="grid">
+    <aside class="panel">
+      <div class="controls-head">
+        <h2>Scenario Control Panel</h2>
+        <div class="inline">
+          <button class="btn" id="resetBtn">Reset</button>
+          <button class="btn primary" id="exportJsonBtn">Export JSON</button>
+        </div>
+      </div>
+      <div class="controls" id="controls"></div>
+
+      <details>
+        <summary>Advanced assumptions</summary>
+        <div class="controls" id="advancedControls" style="margin-top:8px;"></div>
+      </details>
+    </aside>
+
+    <main class="content">
+      <div class="tabs" id="tabs"></div>
+      <div class="inline" style="justify-content:flex-end; margin-bottom:8px;">
+        <button class="btn" id="exportPngBtn">Export Active Chart PNG</button>
+      </div>
+      <section id="panes"></section>
+    </main>
+  </div>
+</div>
+
+<script>
+const CONSTANTS = {
+  monthNames: ['May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr'],
+  daysInMonth: [31,30,31,31,30,31,30,31,31,28,31,30],
+  solarSeasonality: [0.75,0.68,0.62,0.64,0.72,0.86,0.98,1.06,1.12,1.08,0.96,0.84],
+  modeMultipliers: {
+    conservative: { revenue: 0.92, util: 0.9, cost: 1.05 },
+    base: { revenue: 1, util: 1, cost: 1 },
+    aggressive: { revenue: 1.1, util: 1.08, cost: 1.02 }
+  },
+  connectivityTiers: {
+    standard: 0.035,
+    premium: 0.05,
+    hyperscale: 0.068
+  }
+};
+
+const DEFAULTS = {
+  scenarioName: 'Riverland YES Retrospective',
+  siteSku: 'Riverland / YES-linked Dynamic DC',
+  mode: 'base',
+  itLoadKw: 7800,
+  pue: 1.28,
+  totalRacks: 220,
+  gpuRacks: 136,
+  coloRacks: 84,
+  startUtil: 46,
+  endUtil: 78,
+  gpuPrice: 18500,
+  coloPrice: 3900,
+  fabricRevenue: 210000,
+  ppaRate: 58,
+  gridRate: 128,
+  solarPct: 34,
+  curtailPct: 14,
+  batteryEnabled: true,
+  batteryMwh: 6,
+  batteryEff: 0.88,
+  connectivityTier: 'premium',
+  staffingMonthly: 265000,
+  capexEnabled: true,
+  capexAmount: 21000000,
+  capexServicePct: 11,
+  targetEbitda: 1650000,
+  weekendMode: 'weekday',
+  selectedMonth: 11,
+  gpuDirectCostPct: 16,
+  dayIntensity: 1.12,
+  nightIntensity: 0.9,
+  fixedOpsMonthly: 175000
+};
+
+const STATE = {
+  inputs: structuredClone(DEFAULTS),
+  activeTab: 'Integrated Overview',
+  simulation: null
+};
+
+function fmtMoney(v){ return '$' + (v>=1e6?(v/1e6).toFixed(2)+'M':v>=1e3?(v/1e3).toFixed(1)+'K':v.toFixed(0)); }
+function fmtPct(v){ return (v*100).toFixed(1)+'%'; }
+function clamp(v,min,max){ return Math.max(min,Math.min(max,v)); }
+
+function buildControls(){
+  const controls = [
+    ['scenarioName','Scenario Name','text'],['siteSku','Site / SKU','select',['Riverland / YES-linked Dynamic DC','Metro Edge Cluster A','Regional Balanced Node']],
+    ['mode','Scenario Mode','select',['conservative','base','aggressive']],['itLoadKw','IT Load kW','number'],
+    ['pue','PUE','number',null,0.01],['totalRacks','Total Racks','number'],['gpuRacks','GPU Racks','number'],['coloRacks','Colo Racks','number'],
+    ['startUtil','Starting Util %','number'],['endUtil','Ending Util %','number'],['gpuPrice','GPU $/rack/mo','number'],['coloPrice','Colo $/rack/mo','number'],
+    ['fabricRevenue','Fabric / Managed $/mo','number'],['ppaRate','BTM / PPA $/MWh','number'],['gridRate','Retail / Grid $/MWh','number'],
+    ['solarPct','Solar Contribution %','number'],['curtailPct','Curtail Capture %','number'],['batteryEnabled','Battery Enabled','checkbox'],
+    ['batteryMwh','Battery Size (MWh)','number'],['batteryEff','Battery Shift Efficiency','number',null,0.01],['connectivityTier','Connectivity Tier','select',['standard','premium','hyperscale']],
+    ['staffingMonthly','Staffing $/mo','number'],['capexEnabled','Capex Service Enabled','checkbox'],['capexAmount','Capex Amount $','number'],
+    ['capexServicePct','Capex Service % annual','number',null,0.1],['targetEbitda','Target EBITDA $/mo','number'],['weekendMode','Diurnal Mode','select',['weekday','weekend']],
+    ['selectedMonth','Selected Month','select',CONSTANTS.monthNames]
+  ];
+  const advanced = [
+    ['gpuDirectCostPct','GPU Direct Cost % rev','number'],['dayIntensity','Day Intensity Mult','number',null,0.01],
+    ['nightIntensity','Night Intensity Mult','number',null,0.01],['fixedOpsMonthly','Fixed Ops $/mo','number']
+  ];
+
+  const renderSet = (arr, root) => {
+    root.innerHTML = '';
+    arr.forEach(([key, label, type, opts, step]) => {
+      const div = document.createElement('div');
+      div.className = 'field' + (type==='text'?' full':'');
+      const id = 'in_' + key;
+      let html = `<label for="${id}">${label}</label>`;
+      if(type==='select'){
+        html += `<select id="${id}">${opts.map((o,idx)=>`<option value="${typeof o==='string'?o:idx}">${o}</option>`).join('')}</select>`;
+      } else if(type==='checkbox') {
+        html += `<div class="inline"><input id="${id}" type="checkbox" /><span style="font-size:12px;color:#536370;">Enable</span></div>`;
+      } else {
+        html += `<input id="${id}" type="${type}" ${step?`step="${step}"`:''} />`;
+      }
+      div.innerHTML = html;
+      root.appendChild(div);
+      const el = div.querySelector('#'+id);
+      const v = STATE.inputs[key];
+      if(type==='checkbox') el.checked = !!v;
+      else if(type==='select') {
+        if(key==='selectedMonth') el.value = String(v);
+        else el.value = v;
+      } else el.value = v;
+      el.addEventListener('input', () => {
+        if(type==='checkbox') STATE.inputs[key] = el.checked;
+        else if(type==='number') STATE.inputs[key] = parseFloat(el.value||'0');
+        else if(type==='select' && key==='selectedMonth') STATE.inputs[key] = parseInt(el.value,10);
+        else STATE.inputs[key] = el.value;
+        normalizeInputs();
+        run();
+      });
+    });
+  };
+
+  renderSet(controls, document.getElementById('controls'));
+  renderSet(advanced, document.getElementById('advancedControls'));
+}
+
+function normalizeInputs(){
+  const i = STATE.inputs;
+  i.pue = clamp(i.pue,1.05,2);
+  i.solarPct = clamp(i.solarPct,0,95);
+  i.curtailPct = clamp(i.curtailPct,0,40);
+  i.startUtil = clamp(i.startUtil,10,99);
+  i.endUtil = clamp(i.endUtil,10,99);
+  i.gpuRacks = clamp(i.gpuRacks,0,i.totalRacks);
+  i.coloRacks = clamp(i.coloRacks,0,i.totalRacks-i.gpuRacks);
+  i.batteryEff = clamp(i.batteryEff,0.5,0.98);
+}
+
+function simulateOne(inputs, modeName){
+  const mode = CONSTANTS.modeMultipliers[modeName];
+  const months = [];
+  const totalKw = inputs.itLoadKw;
+  let annual = {rev:0, opex:0, ebitda:0, energyMwh:0, energyCost:0, solar:0, grid:0, shifted:0, util:0};
+
+  for(let m=0;m<12;m++){
+    const prog = m/11;
+    const season = 0.96 + 0.06*Math.sin((m/12)*Math.PI*2);
+    const baseUtil = (inputs.startUtil + (inputs.endUtil-inputs.startUtil)*prog)/100;
+    const blendedUtil = clamp(baseUtil*season*mode.util,0.1,0.98);
+    const gpuUtil = clamp(blendedUtil*(1.04 + 0.05*Math.sin(m)),0.1,0.99);
+    const coloUtil = clamp(blendedUtil*(0.95 + 0.03*Math.cos(m*0.6)),0.08,0.95);
+
+    const gpuRev = inputs.gpuRacks * gpuUtil * inputs.gpuPrice * mode.revenue;
+    const coloRev = inputs.coloRacks * coloUtil * inputs.coloPrice * mode.revenue;
+    const fabricRev = inputs.fabricRevenue * (0.78 + 0.5*blendedUtil) * mode.revenue;
+    const revenue = gpuRev + coloRev + fabricRev;
+
+    const days = CONSTANTS.daysInMonth[m];
+    const itMwh = totalKw * 24 * days / 1000 * (0.52 + 0.48*blendedUtil);
+    const facilityMwh = itMwh * inputs.pue;
+    const solarFactor = CONSTANTS.solarSeasonality[m];
+    const solarMwh = facilityMwh * (inputs.solarPct/100) * solarFactor;
+    const rawGrid = Math.max(0, facilityMwh - solarMwh);
+    const shiftedMwh = inputs.batteryEnabled ? Math.min(inputs.batteryMwh*days, solarMwh*0.23) * inputs.batteryEff : 0;
+    const gridMwh = Math.max(0, rawGrid - shiftedMwh);
+    const cheapCaptureMwh = gridMwh * (inputs.curtailPct/100);
+
+    const ppaRate = inputs.ppaRate;
+    const gridRateEff = inputs.gridRate*(1 - (inputs.curtailPct/100)*0.34);
+    const energyCost = solarMwh*ppaRate + (gridMwh-cheapCaptureMwh)*gridRateEff + cheapCaptureMwh*(gridRateEff*0.62);
+
+    const networkCost = revenue * CONSTANTS.connectivityTiers[inputs.connectivityTier] * mode.cost;
+    const staffCost = inputs.staffingMonthly * mode.cost;
+    const gpuDirect = gpuRev * (inputs.gpuDirectCostPct/100);
+    const fixedOps = inputs.fixedOpsMonthly * mode.cost;
+    const capexService = inputs.capexEnabled ? (inputs.capexAmount*(inputs.capexServicePct/100)/12) : 0;
+
+    const opex = energyCost + networkCost + staffCost + gpuDirect + fixedOps + capexService;
+    const ebitda = revenue - opex;
+
+    months.push({
+      name: CONSTANTS.monthNames[m], blendedUtil, gpuUtil, coloUtil, revenue, opex, ebitda, energyCost, networkCost, staffCost,
+      capexService, facilityMwh, solarMwh, gridMwh, shiftedMwh, cheapCaptureMwh
+    });
+
+    annual.rev += revenue; annual.opex += opex; annual.ebitda += ebitda; annual.energyMwh += facilityMwh;
+    annual.energyCost += energyCost; annual.solar += solarMwh; annual.grid += gridMwh; annual.shifted += shiftedMwh; annual.util += blendedUtil;
+  }
+  annual.util /= 12;
+
+  const diurnal = simulateDiurnal(inputs, months[inputs.selectedMonth], mode);
+  const insights = generateInsights(inputs, months, annual);
+  return {months, annual, diurnal, insights};
+}
+
+function simulateDiurnal(inputs, monthRec, mode){
+  const hrs = [...Array(24).keys()];
+  const mIdx = inputs.selectedMonth;
+  const wkndAdj = inputs.weekendMode === 'weekend' ? 0.88 : 1;
+  let batteryStore = 0;
+  const batteryCap = inputs.batteryEnabled ? inputs.batteryMwh : 0;
+
+  const out = hrs.map(h=>{
+    const sun = Math.max(0, Math.exp(-Math.pow((h-12)/3.4,2)));
+    const dayShape = (h>=7 && h<=20) ? inputs.dayIntensity : inputs.nightIntensity;
+    const intensity = clamp((0.58 + 0.65*monthRec.blendedUtil*dayShape*wkndAdj),0.35,1.2);
+    const itKw = inputs.itLoadKw * intensity * mode.util;
+    const facilityKw = itKw * inputs.pue;
+    const solarKw = facilityKw * (inputs.solarPct/100) * CONSTANTS.solarSeasonality[mIdx] * sun * 1.85;
+
+    let gridKw = Math.max(0, facilityKw - solarKw);
+    let shiftKw = 0;
+
+    if(inputs.batteryEnabled){
+      if(solarKw > facilityKw && batteryStore < batteryCap){
+        const charge = Math.min((solarKw - facilityKw)/1000, batteryCap - batteryStore);
+        batteryStore += charge * inputs.batteryEff;
+      }
+      if((h>=17 && h<=22) && batteryStore > 0){
+        const discharge = Math.min(batteryStore, gridKw/1000, batteryCap/5);
+        batteryStore -= discharge;
+        shiftKw = discharge*1000;
+        gridKw = Math.max(0, gridKw - shiftKw);
+      }
+    }
+
+    const touMult = (h>=16 && h<=21) ? 1.28 : (h>=0 && h<=5 ? 0.82 : 1);
+    const effRate = (inputs.gridRate*(gridKw/(facilityKw+1e-6)) + inputs.ppaRate*((facilityKw-gridKw)/(facilityKw+1e-6))) * touMult;
+    const hourlyCost = (gridKw/1000)*inputs.gridRate*touMult + (Math.max(0,facilityKw-gridKw)/1000)*inputs.ppaRate;
+
+    return {h, solarKw, itKw, facilityKw, gridKw, shiftKw, intensity, effRate, hourlyCost};
+  });
+  return out;
+}
+
+function generateInsights(inputs, months, annual){
+  const sorted = [...months].sort((a,b)=>b.ebitda-a.ebitda);
+  const best = sorted[0], worst = sorted[sorted.length-1];
+  const avgEbitda = annual.ebitda/12;
+  const gap = inputs.targetEbitda - avgEbitda;
+  const baselineEnergy = annual.energyMwh * inputs.gridRate;
+  const avoided = baselineEnergy - annual.energyCost;
+  const solarShare = annual.solar/(annual.solar+annual.grid+1e-9);
+  const gridDep = annual.grid/(annual.solar+annual.grid+1e-9);
+  const revPerKw = annual.rev/(inputs.itLoadKw*12);
+  const ebitdaPerKw = annual.ebitda/(inputs.itLoadKw*12);
+
+  return [
+    `${best.name} is the strongest commercial month with EBITDA at ${fmtMoney(best.ebitda)}, driven by utilisation ramp and seasonal solar tailwind.`,
+    `${worst.name} is the softest month at ${fmtMoney(worst.ebitda)}, with weaker renewable coverage and reduced blended rack monetisation.`,
+    `Average monthly EBITDA is ${fmtMoney(avgEbitda)} (${fmtPct(avgEbitda/(annual.rev/12||1))} margin), versus target ${fmtMoney(inputs.targetEbitda)}.` + (gap>0?` Gap to target is ${fmtMoney(gap)} per month.`:` Target is exceeded by ${fmtMoney(Math.abs(gap))} per month.`),
+    `Solar + curtailment strategy avoids ${fmtMoney(avoided)} per year versus full retail procurement, preserving margin resilience.`,
+    `Grid dependence is ${fmtPct(gridDep)} and direct solar capture is ${fmtPct(solarShare)} of annual facility energy.`,
+    `Annual revenue efficiency sits at ${fmtMoney(revPerKw)} per kW-month, while EBITDA efficiency is ${fmtMoney(ebitdaPerKw)} per kW-month.`,
+    `${annual.util>0.68?'Capacity utilisation is now primary value lever; energy economics are supportive.':'Energy cost posture is competitive, but utilisation lift remains the dominant EBITDA unlock.'}`,
+    `${inputs.batteryEnabled?'Battery shifting is reducing peak-hour import and smoothing cost intensity in the replay diurnal profile.':'Battery is disabled; peak-price exposure remains structurally higher in late-day intervals.'}`
+  ];
+}
+
+function run(){
+  STATE.simulation = simulateOne(STATE.inputs, STATE.inputs.mode);
+  renderTabs();
+  renderActiveTab();
+}
+
+function renderTabs(){
+  const names = ['Integrated Overview','Diurnal Replay','Monthly Commercials','Utilisation Ramp','Energy Arbitrage','Scenario Compare'];
+  const root = document.getElementById('tabs');
+  root.innerHTML = '';
+  names.forEach(n=>{
+    const b = document.createElement('button');
+    b.className = 'tab' + (n===STATE.activeTab?' active':'');
+    b.textContent = n;
+    b.onclick = () => { STATE.activeTab = n; renderTabs(); renderActiveTab(); };
+    root.appendChild(b);
+  });
+}
+
+function makePane(name,html){ return `<div class="tab-pane ${STATE.activeTab===name?'active':''}" data-pane="${name}">${html}</div>`; }
+
+function renderActiveTab(){
+  const sim = STATE.simulation;
+  const m = sim.months;
+  const a = sim.annual;
+  const paneHTML = [
+    makePane('Integrated Overview', `
+      <div class="kpis">
+        <div class="kpi"><div class="k">Annual Revenue</div><div class="v">${fmtMoney(a.rev)}</div><div class="s">Replay 12-month total</div></div>
+        <div class="kpi"><div class="k">Annual EBITDA</div><div class="v" style="color:${a.ebitda>0?'var(--teal)':'var(--red)'};">${fmtMoney(a.ebitda)}</div><div class="s">${fmtPct(a.ebitda/(a.rev||1))} margin</div></div>
+        <div class="kpi"><div class="k">Avg Utilisation</div><div class="v">${fmtPct(a.util)}</div><div class="s">Blended rack intensity</div></div>
+        <div class="kpi"><div class="k">Avoided Energy Cost</div><div class="v">${fmtMoney(a.energyMwh*STATE.inputs.gridRate-a.energyCost)}</div><div class="s">vs all-retail baseline</div></div>
+      </div>
+      <div class="row2">
+        <div>
+          <div class="card"><h3>12-Month EBITDA Replay</h3><canvas id="ebitdaLine"></canvas></div>
+          <div class="card"><h3>Revenue vs Opex (Monthly)</h3><canvas id="revCostStack"></canvas></div>
+        </div>
+        <div class="card insights"><h3>Executive Narrative Insights</h3><ul>${sim.insights.map(i=>`<li>${i}</li>`).join('')}</ul></div>
+      </div>`),
+    makePane('Diurnal Replay', `
+      <div class="metrics">
+        <div class="metric"><b>Selected Month:</b> ${CONSTANTS.monthNames[STATE.inputs.selectedMonth]}</div>
+        <div class="metric"><b>Mode:</b> ${STATE.inputs.weekendMode}</div>
+        <div class="metric"><b>Peak Grid Import:</b> ${Math.max(...sim.diurnal.map(d=>d.gridKw)).toFixed(0)} kW</div>
+        <div class="metric"><b>Peak Effective Rate:</b> ${Math.max(...sim.diurnal.map(d=>d.effRate)).toFixed(1)} $/MWh</div>
+      </div>
+      <div class="card"><h3>24-Hour Operating Replay</h3><canvas id="diurnalMain"></canvas></div>
+      <div class="card short"><h3>Hourly Cost Intensity</h3><canvas id="diurnalCost"></canvas></div>`),
+    makePane('Monthly Commercials', `
+      <div class="card"><h3>Monthly Revenue, Opex, EBITDA</h3><canvas id="monthlyCommercial"></canvas></div>
+      <div class="card short"><h3>Cost Stack (Energy, Staffing, Network, Capex)</h3><canvas id="monthlyCosts"></canvas></div>`),
+    makePane('Utilisation Ramp', `
+      <div class="card"><h3>GPU vs Colo vs Blended Utilisation</h3><canvas id="utilRamp"></canvas></div>
+      <div class="card short"><h3>Revenue per Rack Replay</h3><canvas id="rackYield"></canvas></div>`),
+    makePane('Energy Arbitrage', `
+      <div class="card"><h3>Monthly Energy Mix (Solar / Grid / Shifted)</h3><canvas id="energyMix"></canvas></div>
+      <div class="card short"><h3>Energy Cost with vs without Battery</h3><canvas id="batteryCompare"></canvas></div>
+      <div class="card short"><h3>Month x Hour Grid Dependence Heatmap</h3><canvas id="heatmap"></canvas></div>`),
+    makePane('Scenario Compare', `
+      <div class="card"><h3>Conservative / Base / Aggressive Benchmark</h3><canvas id="scenarioCompare"></canvas></div>
+      <div class="metrics" id="scenarioMetrics"></div>`)
+  ].join('');
+
+  document.getElementById('panes').innerHTML = paneHTML;
+
+  if(STATE.activeTab==='Integrated Overview'){
+    drawLine('ebitdaLine', m.map(x=>x.ebitda), CONSTANTS.monthNames, '#0f8b8d', true);
+    drawGroupedBars('revCostStack', [m.map(x=>x.revenue),m.map(x=>x.opex)], ['Revenue','Opex'], ['#1e6eb8','#d18a00'], CONSTANTS.monthNames);
+  } else if(STATE.activeTab==='Diurnal Replay'){
+    drawMultiLine('diurnalMain', sim.diurnal, [
+      ['solarKw','#0f8b8d','Solar kW'],['itKw','#1868b7','IT kW'],['facilityKw','#384e5d','Facility kW'],['gridKw','#cc3d3d','Grid Import kW'],['shiftKw','#d18a00','Battery Shift kW'],['intensity','#5d6770','Workload Intensity x',true]
+    ]);
+    drawLine('diurnalCost', sim.diurnal.map(d=>d.hourlyCost), sim.diurnal.map(d=>String(d.h)), '#cc3d3d', false, '$/h');
+  } else if(STATE.activeTab==='Monthly Commercials'){
+    drawMultiBar('monthlyCommercial', CONSTANTS.monthNames, [
+      {label:'Revenue',data:m.map(x=>x.revenue),color:'#1e6eb8'},
+      {label:'Opex',data:m.map(x=>x.opex),color:'#d18a00'},
+      {label:'EBITDA',data:m.map(x=>x.ebitda),color:'#0f8b8d'}
+    ]);
+    drawStacked('monthlyCosts', CONSTANTS.monthNames, [
+      {label:'Energy',data:m.map(x=>x.energyCost),color:'#cc3d3d'},
+      {label:'Staffing',data:m.map(x=>x.staffCost),color:'#1868b7'},
+      {label:'Network',data:m.map(x=>x.networkCost),color:'#0f8b8d'},
+      {label:'Capex',data:m.map(x=>x.capexService),color:'#7e8991'}
+    ]);
+  } else if(STATE.activeTab==='Utilisation Ramp'){
+    drawPercentLines('utilRamp', CONSTANTS.monthNames, [
+      {label:'GPU Util %',data:m.map(x=>x.gpuUtil*100),color:'#1868b7'},
+      {label:'Colo Util %',data:m.map(x=>x.coloUtil*100),color:'#d18a00'},
+      {label:'Blended Util %',data:m.map(x=>x.blendedUtil*100),color:'#0f8b8d'}
+    ]);
+    drawLine('rackYield', m.map(x=>x.revenue/(STATE.inputs.totalRacks||1)), CONSTANTS.monthNames, '#1868b7', true);
+  } else if(STATE.activeTab==='Energy Arbitrage'){
+    drawStacked('energyMix', CONSTANTS.monthNames, [
+      {label:'Solar MWh',data:m.map(x=>x.solarMwh),color:'#0f8b8d'},
+      {label:'Grid MWh',data:m.map(x=>x.gridMwh),color:'#cc3d3d'},
+      {label:'Shifted MWh',data:m.map(x=>x.shiftedMwh),color:'#d18a00'}
+    ]);
+    const noBat = simulateOne({...STATE.inputs,batteryEnabled:false}, STATE.inputs.mode);
+    drawMultiBar('batteryCompare', CONSTANTS.monthNames, [
+      {label:'With Battery',data:m.map(x=>x.energyCost),color:'#0f8b8d'},
+      {label:'Without Battery',data:noBat.months.map(x=>x.energyCost),color:'#cc3d3d'}
+    ]);
+    drawHeatmap('heatmap');
+  } else if(STATE.activeTab==='Scenario Compare'){
+    const scenarios = ['conservative','base','aggressive'].map(s=>({name:s,sim:simulateOne(STATE.inputs,s)}));
+    drawScenario('scenarioCompare', scenarios);
+    const met = document.getElementById('scenarioMetrics');
+    met.innerHTML = scenarios.map(s=>{
+      const an = s.sim.annual;
+      return `<div class="metric"><b>${s.name.toUpperCase()}</b><br/>Revenue ${fmtMoney(an.rev)}<br/>EBITDA ${fmtMoney(an.ebitda)}<br/>Margin ${fmtPct(an.ebitda/(an.rev||1))}<br/>Energy $/MWh ${(an.energyCost/(an.energyMwh||1)).toFixed(1)}<br/>Grid Dep ${fmtPct(an.grid/(an.grid+an.solar||1))}</div>`;
+    }).join('');
+  }
+}
+
+function setupCanvas(id){
+  const c = document.getElementById(id); if(!c) return null;
+  const r = c.getBoundingClientRect(); c.width = r.width*window.devicePixelRatio; c.height = r.height*window.devicePixelRatio;
+  const ctx = c.getContext('2d'); ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+  return {c,ctx,w:r.width,h:r.height};
+}
+function axes(ctx,w,h){ ctx.strokeStyle='#dfe8ed'; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(42,12); ctx.lineTo(42,h-28); ctx.lineTo(w-12,h-28); ctx.stroke(); }
+function legend(ctx, items,w){ let x=48,y=16; ctx.font='11px Inter'; items.forEach(i=>{ ctx.fillStyle=i[1]; ctx.fillRect(x,y-8,10,10); ctx.fillStyle='#3f5261'; ctx.fillText(i[0],x+14,y); x+=92; if(x>w-130){x=48;y+=14;} }); }
+
+function drawLine(id,data,labels,color,fill=false,suffix=''){
+  const s=setupCanvas(id); if(!s) return; const {ctx,w,h}=s; ctx.clearRect(0,0,w,h); axes(ctx,w,h);
+  const min=Math.min(...data), max=Math.max(...data); const span=(max-min)||1;
+  ctx.strokeStyle=color; ctx.lineWidth=2; ctx.beginPath();
+  data.forEach((v,i)=>{ const x=42+i*((w-56)/(data.length-1)); const y=(h-28)-((v-min)/span)*(h-54); if(i===0)ctx.moveTo(x,y); else ctx.lineTo(x,y); });
+  ctx.stroke();
+  if(fill){ ctx.globalAlpha=.09; ctx.lineTo(w-14,h-28); ctx.lineTo(42,h-28); ctx.closePath(); ctx.fillStyle=color; ctx.fill(); ctx.globalAlpha=1; }
+  ctx.fillStyle='#627583'; ctx.font='10px Inter';
+  labels.forEach((l,i)=>{ if(i%2===0){ const x=42+i*((w-56)/(labels.length-1)); ctx.fillText(l,x-8,h-12);} });
+  ctx.fillStyle='#324754'; ctx.fillText((max).toFixed(0)+suffix,8,16); ctx.fillText((min).toFixed(0)+suffix,8,h-30);
+}
+
+function drawGroupedBars(id,series,names,colors,labels){
+  const s=setupCanvas(id); if(!s) return; const {ctx,w,h}=s; ctx.clearRect(0,0,w,h); axes(ctx,w,h); legend(ctx,names.map((n,i)=>[n,colors[i]]),w);
+  const max=Math.max(...series.flat())*1.1; const gW=(w-58)/labels.length;
+  labels.forEach((l,i)=>{ series.forEach((arr,j)=>{ const bw=(gW-8)/series.length; const x=44+i*gW+j*bw; const y=(h-30)-((arr[i])/max)*(h-56); ctx.fillStyle=colors[j]; ctx.fillRect(x,y,bw-2,(h-30)-y); }); if(i%2===0){ctx.fillStyle='#627583';ctx.font='10px Inter';ctx.fillText(l,44+i*gW,h-12);} });
+}
+function drawMultiBar(id,labels,datasets){ drawGroupedBars(id,datasets.map(d=>d.data),datasets.map(d=>d.label),datasets.map(d=>d.color),labels); }
+function drawStacked(id,labels,datasets){
+  const s=setupCanvas(id); if(!s) return; const {ctx,w,h}=s; ctx.clearRect(0,0,w,h); axes(ctx,w,h); legend(ctx,datasets.map(d=>[d.label,d.color]),w);
+  const totals=labels.map((_,i)=>datasets.reduce((a,d)=>a+d.data[i],0)); const max=Math.max(...totals)*1.1; const bw=(w-60)/labels.length-4;
+  labels.forEach((l,i)=>{ let yBase=h-30; datasets.forEach(d=>{ const hh=(d.data[i]/max)*(h-56); ctx.fillStyle=d.color; ctx.fillRect(44+i*((w-58)/labels.length),yBase-hh,bw,hh); yBase-=hh;}); if(i%2===0){ctx.fillStyle='#627583';ctx.font='10px Inter';ctx.fillText(l,43+i*((w-58)/labels.length),h-12);} });
+}
+function drawPercentLines(id,labels,sets){
+  const s=setupCanvas(id); if(!s) return; const {ctx,w,h}=s; ctx.clearRect(0,0,w,h); axes(ctx,w,h); legend(ctx,sets.map(x=>[x.label,x.color]),w);
+  sets.forEach(set=>{ ctx.strokeStyle=set.color;ctx.lineWidth=2;ctx.beginPath(); set.data.forEach((v,i)=>{ const x=42+i*((w-56)/(labels.length-1)); const y=(h-28)-((v)/100)*(h-56); i?ctx.lineTo(x,y):ctx.moveTo(x,y);}); ctx.stroke(); });
+  ctx.fillStyle='#627583';ctx.font='10px Inter';labels.forEach((l,i)=>{if(i%2===0){const x=42+i*((w-56)/(labels.length-1));ctx.fillText(l,x-8,h-12);}});
+}
+function drawMultiLine(id,data,defs){
+  const s=setupCanvas(id); if(!s) return; const {ctx,w,h}=s; ctx.clearRect(0,0,w,h); axes(ctx,w,h); legend(ctx,defs.map(d=>[d[2],d[1]]),w);
+  defs.forEach(([k,color,,scaled])=>{
+    const arr=data.map(d=>d[k]); const max=Math.max(...arr), min=Math.min(...arr); const span=(max-min)||1;
+    ctx.strokeStyle=color; ctx.lineWidth=2; ctx.beginPath();
+    arr.forEach((v,i)=>{ const x=42+i*((w-56)/(arr.length-1)); const y=(h-28)-((v-min)/span)*(h-56)*(scaled?0.45:1) - (scaled?20:0); i?ctx.lineTo(x,y):ctx.moveTo(x,y); });
+    ctx.stroke();
+  });
+  ctx.fillStyle='#627583'; ctx.font='10px Inter'; data.forEach((d,i)=>{ if(i%3===0){ const x=42+i*((w-56)/(data.length-1)); ctx.fillText(d.h,x-3,h-12);} });
+}
+function drawHeatmap(id){
+  const s=setupCanvas(id); if(!s) return; const {ctx,w,h}=s; ctx.clearRect(0,0,w,h);
+  const cw=(w-70)/24,ch=(h-44)/12;
+  for(let m=0;m<12;m++){
+    for(let hr=0;hr<24;hr++){
+      const v = clamp(0.65 + 0.25*Math.sin((hr-6)/24*Math.PI*2) - 0.18*CONSTANTS.solarSeasonality[m],0,1);
+      const r=Math.floor(230*v), g=Math.floor(170*(1-v)+80), b=90;
+      ctx.fillStyle=`rgb(${r},${g},${b})`; ctx.fillRect(48+hr*cw,12+m*ch,cw-1,ch-1);
+    }
+  }
+  ctx.fillStyle='#546674'; ctx.font='10px Inter';
+  CONSTANTS.monthNames.forEach((m,i)=>ctx.fillText(m,6,20+i*ch));
+  [0,6,12,18,23].forEach(hh=>ctx.fillText(String(hh),48+hh*cw,h-8));
+}
+function drawScenario(id,scenarios){
+  const labels=['Revenue','EBITDA','Margin%','Energy $/MWh','Rev/kW-mo','Grid Dep%','Avoided Energy'];
+  const s=setupCanvas(id); if(!s)return; const {ctx,w,h}=s; ctx.clearRect(0,0,w,h); axes(ctx,w,h);
+  const cols=['#7e8991','#1868b7','#0f8b8d']; legend(ctx,scenarios.map((x,i)=>[x.name,cols[i]]),w);
+  const values=scenarios.map(sc=>{const a=sc.sim.annual; return [a.rev,a.ebitda,(a.ebitda/(a.rev||1))*100,a.energyCost/(a.energyMwh||1),a.rev/(STATE.inputs.itLoadKw*12),a.grid/(a.grid+a.solar||1)*100,a.energyMwh*STATE.inputs.gridRate-a.energyCost];});
+  const max=Math.max(...values.flat())*1.1; const groupW=(w-60)/labels.length;
+  labels.forEach((l,i)=>{ values.forEach((arr,j)=>{ const bw=(groupW-8)/3; const x=44+i*groupW+j*bw; const y=(h-30)-((arr[i])/max)*(h-56); ctx.fillStyle=cols[j]; ctx.fillRect(x,y,bw-2,(h-30)-y);}); ctx.fillStyle='#627583'; ctx.font='10px Inter'; ctx.fillText(l.slice(0,8),44+i*groupW,h-12); });
+}
+
+function bindButtons(){
+  document.getElementById('resetBtn').onclick = ()=>{ STATE.inputs = structuredClone(DEFAULTS); buildControls(); run(); };
+  document.getElementById('exportJsonBtn').onclick = ()=>{
+    const payload = JSON.stringify({inputs:STATE.inputs, simulation:STATE.simulation}, null, 2);
+    const blob = new Blob([payload], {type:'application/json'});
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+    a.download = `circnomia_retro_twin_${Date.now()}.json`; a.click(); URL.revokeObjectURL(a.href);
+  };
+  document.getElementById('exportPngBtn').onclick = ()=>{
+    const pane = document.querySelector('.tab-pane.active');
+    const c = pane ? pane.querySelector('canvas') : null;
+    if(!c) return alert('No chart available in active tab.');
+    const a = document.createElement('a'); a.href = c.toDataURL('image/png'); a.download = `${STATE.activeTab.replace(/\s+/g,'_').toLowerCase()}_${Date.now()}.png`; a.click();
+  };
+  window.addEventListener('resize', ()=>renderActiveTab());
+}
+
+buildControls();
+bindButtons();
+run();
+</script>
+</body>
+</html>
